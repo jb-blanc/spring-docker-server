@@ -1,0 +1,22 @@
+#On récupère l'image docker qui va bien pour java
+FROM openjdk:8-jdk-alpine
+
+#Création des répertoires utiles
+RUN mkdir /data
+RUN mkdir /data/springdockerserver
+RUN mkdir /application
+
+#Montage du volume partagé avec l'hote
+VOLUME ["/data/springdockerserver"]
+
+#Copy de l'executable springboot
+COPY ./target/spring-docker-server.jar /application
+
+#On se place dans le dossier pour lancer notre appli
+WORKDIR /application
+
+#Indique a docker que l'app run sur le port 8080
+EXPOSE 8080
+
+#On lance l'application
+CMD ["java", "-Dlogging.file=spring-docker-server.log", "-Dlogging.path=/data/springdockerserver/logs", "-jar", "spring-docker-server.jar", "--server.port=8080"]
